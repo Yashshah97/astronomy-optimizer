@@ -119,7 +119,33 @@ def _perturb(params):
     perturbed_params = {}
     for k, v in params.items():
         if random.random() < 0.1:  # 10% chance of perturbation
-            perturbed_params[k] = max(0, min(v + random.randint(-5, 5), 100))
-        else:
-            perturbed_params[k] = v
+            perturbed_params[k] = max(0, min(v + random.randint(-5, 5), 100))  # adjust range to [0, 100]
     return perturbed_params
+
+
+def _check_bounds(bounds):
+    """
+    Check if the given bounds are valid.
+
+    Args:
+        bounds (dict): Dictionary mapping each parameter to its bounds.
+
+    Returns:
+        None
+    """
+    if not bounds or not all(len(b) == 2 for b in bounds.values()):
+        raise ValueError("Invalid bounds")
+
+
+def _check_initial_temperature(initial_temperature):
+    """
+    Check if the given initial temperature is valid.
+
+    Args:
+        initial_temperature (float): Initial temperature for the search.
+
+    Returns:
+        None
+    """
+    if not isinstance(initial_temperature, (int, float)) or initial_temperature <= 0:
+        raise ValueError("Invalid initial temperature")
