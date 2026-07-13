@@ -18,9 +18,18 @@ def calculate_distance(ra1: float, dec1: float, ra2: float, dec2: float) -> floa
     :param ra2: Right ascension of point 2 in radians.
     :param dec2: Declination of point 2 in radians.
     :return: Distance between the two points on a sphere.
+
+    Raises:
+        ValueError: If any input is not within the valid range (-π, π] for right ascension or [-π/2, π/2] for declination
     """
+    if not (-math.pi <= ra1 <= math.pi and -math.pi / 2 <= dec1 <= math.pi / 2):
+        raise ValueError("Invalid celestial coordinates")
+    if not (-math.pi <= ra2 <= math.pi and -math.pi / 2 <= dec2 <= math.pi / 2):
+        raise ValueError("Invalid celestial coordinates")
+
     d_ra = math.radians(ra2 - ra1)
     d_dec = math.radians(dec2 - dec1)
+
     a = math.sin(d_dec / 2) ** 2 + math.cos(math.radians(dec1)) * math.cos(math.radians(dec2)) * math.sin(d_ra / 2) ** 2
     return 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
 
@@ -30,7 +39,10 @@ def calculate_magnitude(mag: float, distance: float) -> float:
 
     :param mag: Absolute magnitude of the object.
     :param distance: Distance to the object in parsecs.
-    :return: Apparent magnitude of the object.
+    :return: Apparent magnitude of the object
+
+    Notes:
+        This function uses the formula for apparent magnitude, which is based on the inverse square law
     """
     return mag + 5 * math.log10(distance)
 
@@ -40,8 +52,14 @@ def calculate_uncertainty(values: List[float], confidence_level: float = 0.95) -
 
     :param values: List of values to calculate the mean and standard deviation for.
     :param confidence_level: Confidence level (default is 95%).
-    :return: Mean and standard deviation of the input values.
+    :return: Mean and standard deviation of the input values
+
+    Notes:
+        This function uses Bessel's correction for sample variance
     """
+    if len(values) < 2:
+        raise ValueError("Cannot calculate uncertainty with less than two values")
+
     mean = sum(values) / len(values)
     variance = sum((x - mean) ** 2 for x in values) / (len(values) - 1)
     std_dev = math.sqrt(variance)
