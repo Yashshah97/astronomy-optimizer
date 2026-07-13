@@ -22,9 +22,8 @@ def calculate_distance(ra1: float, dec1: float, ra2: float, dec2: float) -> floa
     Raises:
         ValueError: If any input is not within the valid range (-π, π] for right ascension or [-π/2, π/2] for declination
     """
-    if not (-math.pi <= ra1 <= math.pi and -math.pi / 2 <= dec1 <= math.pi / 2):
-        raise ValueError("Invalid celestial coordinates")
-    if not (-math.pi <= ra2 <= math.pi and -math.pi / 2 <= dec2 <= math.pi / 2):
+    if not ((-math.pi <= ra1 <= math.pi and -math.pi / 2 <= dec1 <= math.pi / 2) and 
+            (-math.pi <= ra2 <= math.pi and -math.pi / 2 <= dec2 <= math.pi / 2)):
         raise ValueError("Invalid celestial coordinates")
 
     d_ra = math.radians(ra2 - ra1)
@@ -44,6 +43,8 @@ def calculate_magnitude(mag: float, distance: float) -> float:
     Notes:
         This function uses the formula for apparent magnitude, which is based on the inverse square law
     """
+    if distance <= 0:
+        raise ValueError("Distance must be a positive value")
     return mag + 5 * math.log10(distance)
 
 def calculate_uncertainty(values: List[float], confidence_level: float = 0.95) -> Tuple[float, float]:
