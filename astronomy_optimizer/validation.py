@@ -10,16 +10,15 @@ class AstronomyError(Exception):
 
 
 class InvalidInput(AstronomyError):
-    """Raised when the input is invalid or malformed."""
-    def __init__(self, message, value=None, name=None):
-        """
-        Initialize an InvalidInput exception.
+    """
+    Raised when the input is invalid or malformed.
 
-        Args:
-            message: The error message.
-            value: The value that caused the error (optional).
-            name: The name of the value that caused the error (optional).
-        """
+    Args:
+        message: The error message.
+        value: The value that caused the error (optional).
+        name: The name of the value that caused the error (optional).
+    """
+    def __init__(self, message, value=None, name=None):
         super().__init__(message)
         self.value = value
         self.name = name
@@ -113,3 +112,21 @@ def _validate_non_empty_string(value, name):
     """
     if isinstance(value, str) and value.strip() == "":
         raise InvalidInput(f"{name} must be a non-empty string", value=value)
+
+
+def validate_inputs(**kwargs):
+    """
+    Validate that all provided keyword arguments are valid.
+
+    Args:
+        **kwargs: Keyword arguments to validate. The keys should match the function names in this module,
+            and the values should be passed as-is to the corresponding validation function.
+    """
+    for func_name, value in kwargs.items():
+        if func_name.startswith("_"):
+            continue
+        func = globals()[func_name]
+        try:
+            func(value, name=func_name)
+        except InvalidInput as e:
+            raise ValueError(f"Invalid input: {e}")
