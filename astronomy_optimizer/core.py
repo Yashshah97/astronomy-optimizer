@@ -7,6 +7,7 @@ It is designed to be self-contained, using only pure Python standard library fea
 
 import itertools
 import random
+import math
 
 
 def grid_search(params, bounds):
@@ -93,7 +94,7 @@ def _evaluate(params, values):
         float: Score for the given set of parameters.
     """
     # TO DO: implement evaluation function
-    return 0.0
+    return sum(values.values()) / len(values)
 
 
 def _perturb(params):
