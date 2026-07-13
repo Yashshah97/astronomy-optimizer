@@ -28,7 +28,7 @@ def read_csv(filename: str) -> List[Dict[str, str]]:
         return []
     except Exception as e:
         print(f"Error reading CSV file: {e}")
-        return []
+        raise
 
 def write_csv(filename: str, data: List[Dict[str, str]]) -> None:
     """
@@ -67,7 +67,7 @@ def read_text(filename: str) -> List[str]:
         return []
     except Exception as e:
         print(f"Error reading text file: {e}")
-        return []
+        raise
 
 def write_text(filename: str, data: List[str]) -> None:
     """
@@ -84,3 +84,38 @@ def write_text(filename: str, data: List[str]) -> None:
     with open(filename, 'w') as f:
         for line in data:
             f.write(line + '\n')
+
+def read_csv_or_text(filename: str) -> List[str]:
+    """
+    Attempts to read a CSV or text file into a list of strings.
+
+    Args:
+        filename (str): The name of the file to read.
+
+    Returns:
+        List[str]: A list of strings where each string represents a line in the
+            file. If the file does not exist, an empty list is returned.
+    """
+    if filename.endswith('.csv'):
+        return read_csv(filename)
+    elif filename.endswith('.txt') or filename.endswith('.text'):
+        return read_text(filename)
+    else:
+        print(f"Unsupported file type: {filename}")
+        return []
+
+def write_csv_or_text(filename: str, data: List[str]) -> None:
+    """
+    Attempts to write a list of strings to a CSV or text file.
+
+    Args:
+        filename (str): The name of the file to write.
+        data (List[str]): A list of strings where each string represents a line
+            in the file. If the input list is empty, an empty file will be created.
+    """
+    if filename.endswith('.csv'):
+        write_csv(filename, [{'key': 'value'} if not data else data])
+    elif filename.endswith('.txt') or filename.endswith('.text'):
+        write_text(filename, data)
+    else:
+        print(f"Unsupported file type: {filename}")
