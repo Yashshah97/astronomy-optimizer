@@ -13,7 +13,13 @@ def format_result(result):
 
     Returns:
         str: A human-readable representation of the result.
+
+    Raises:
+        TypeError: If `result` is not a dict.
     """
+    if not isinstance(result, dict):
+        raise TypeError("Result must be a dictionary")
+    
     formatted = "Optimization Result:\n"
     for key, value in result.items():
         formatted += f"{key}: {value}\n"
@@ -29,10 +35,7 @@ def format_grid_result(result):
     Returns:
         str: A human-readable representation of the result.
     """
-    formatted = "Grid Search Result:\n"
-    for key, value in result.items():
-        formatted += f"{key}: {value}\n"
-    return formatted
+    return format_result(result)
 
 def format_annealing_result(result):
     """
@@ -44,7 +47,4 @@ def format_annealing_result(result):
     Returns:
         str: A human-readable representation of the result.
     """
-    formatted = "Simulated Annealing Search Result:\n"
-    for key, value in result.items():
-        formatted += f"{key}: {value}\n"
-    return formatted
+    return format_result(result)
