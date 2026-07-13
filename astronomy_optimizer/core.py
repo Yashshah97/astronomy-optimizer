@@ -21,6 +21,9 @@ def grid_search(params, bounds):
     Returns:
         dict: Best set of parameters found by the search.
     """
+    if not bounds or not all(len(b) == 2 for b in bounds.values()):
+        raise ValueError("Invalid bounds")
+
     best_params = None
     best_score = float('-inf')
     for p in itertools.product(*[range(b[0], b[1] + 1) for b in bounds.values()]):
@@ -43,6 +46,9 @@ def random_search(params, bounds, num_samples):
     Returns:
         dict: Best set of parameters found by the search.
     """
+    if not isinstance(num_samples, int) or num_samples <= 0:
+        raise ValueError("Invalid number of samples")
+
     best_params = None
     best_score = float('-inf')
     for _ in range(num_samples):
@@ -66,6 +72,9 @@ def simulated_annealing_search(params, bounds, initial_temperature):
     Returns:
         dict: Best set of parameters found by the search.
     """
+    if not isinstance(initial_temperature, (int, float)) or initial_temperature <= 0:
+        raise ValueError("Invalid initial temperature")
+
     best_params = None
     best_score = float('-inf')
     current_params = {k: random.randint(b[0], b[1]) for k, b in bounds.items()}
