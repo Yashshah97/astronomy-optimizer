@@ -10,8 +10,10 @@ class Star:
     magnitude: float
 
     def __post_init__(self):
-        if not (0 <= self.ra < 360 and 0 <= self.dec < 90):
-            raise ValueError("RA and DEC must be within valid ranges")
+        if not (0 <= self.ra < 360 and -90 <= self.dec <= 90):  # corrected DEC range
+            raise ValueError("RA must be between 0 and 360, DEC must be between -90 and 90")
+        if self.magnitude < 0:
+            raise ValueError("Magnitude cannot be negative")
 
 @dataclass(frozen=True)
 class LightCurve:
@@ -23,6 +25,9 @@ class LightCurve:
     def __post_init__(self):
         if len(self.time_points) != len(self.flux_values):
             raise ValueError("Time points and flux values must have the same length")
+        for time, flux in zip(self.time_points, self.flux_values):
+            if not (time >= 0):  # added check for non-negative time
+                raise ValueError("Time cannot be negative")
 
 @dataclass(frozen=True)
 class ParameterSet:
@@ -35,3 +40,15 @@ class ParameterSet:
             raise ValueError("All elements in 'stars' must be instances of Star")
         if not all(isinstance(light_curve, LightCurve) for light_curve in self.light_curves):
             raise ValueError("All elements in 'light_curves' must be instances of LightCurve")
+
+    def add_star(self, star: Star):
+        """Add a new star to the parameter set."""
+        self.stars.append(star)
+
+    def remove_star(self, star_name: str):
+        """Remove a star from the parameter set by its name."""
+        self.stars = [s for s in self.stars if s.name != star_name]
+
+    def add_light_curve(self, light_curve: LightCurve):
+        """Add a new light curve to the parameter set."""
+        self.light_curves.append(light_curve)
